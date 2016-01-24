@@ -5,6 +5,7 @@
   "main": "none",
   "dependencies": {
     "promise": "",
+    "log4js": "",
     "phantomjs": "^1.9.19",
     "selenium-webdriver": "^2.48.2"
   },

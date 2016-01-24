@@ -8,9 +8,16 @@ var webdriver = require('selenium-webdriver'),
 by = webdriver.By,
 Promise = require('promise');
 
+var log4js = require('log4js'); 
+log4js.loadAppender('file');
+log4js.addAppender(log4js.appenders.file('instabot.log'), 'instabot');
+var logger = log4js.getLogger('instabot');
+logger.setLevel('DEBUG');
+
 // ------ Start defining user-specific variables ------
+var smart_likes_mode = true;
 var sleep_delay = 2200;
-var smart_likes_mode = false;
+var like_depth_per_user = 5;
 var instagram_account_username = '<your_instagram_account_here>';
 var instagram_account_password = '<your_instagram_password_here>';
 var instagram_accounts_to_be_liked = ['navalny4', 'xenia_sobchak'];
@@ -36,18 +43,18 @@ browser.sleep(sleep_delay).then(function() {
 
 function like_by_nickname(indexNickname) {
     if (indexNickname >= instagram_accounts_to_be_liked.length) {
-        console.log('Everything is done. Finishing...');
+        logger.info('Everything is done. Finishing...');
         browser.quit();
         return;
     }
     var nickname = instagram_accounts_to_be_liked[indexNickname];
     var promise = new Promise(function (resolve, reject) {    
         browser.sleep(sleep_delay);
-        console.log('Doing likes for: ' + nickname);
+        logger.info('Doing likes for: ' + nickname);
         browser.get('https://instagram.com/' + nickname);
         browser.sleep(sleep_delay);
         browser.findElement(by.xpath(xpath_first_photo)).click().then(function () {
-            like(resolve, 0, 3);
+            like(resolve, 0, like_depth_per_user);
         });
     });
     
@@ -59,13 +66,13 @@ function like_by_nickname(indexNickname) {
 
 function like(resolve, index, max_likes) {
     browser.getCurrentUrl().then(function(url) {
-        console.log('Current url:   ' + url);
+        logger.debug('Current url:   ' + url);
         browser.sleep(sleep_delay);
 
         browser.findElement(by.xpath(xpath_like_button)).getAttribute('class').then(function(classname) {
-            console.log('CSS Classname: ' + classname);
+            logger.debug('CSS Classname: ' + classname);
             if (smart_likes_mode && (classname.indexOf('coreSpriteHeartFull') > 0)) {
-                console.log('Already liked. Stopping...');
+                logger.info('Already liked. Stopping...');
                 resolve();
                 return;
             } else {
@@ -75,10 +82,10 @@ function like(resolve, index, max_likes) {
                 };
                 // Analyzing "Next" button availability
                 browser.findElements(by.xpath(xpath_nextprev_buttons)).then(function(buttons) {
-                    console.log('Buttons: ' + buttons.length + ', Photo Index: ' + index);
+                    logger.debug('Buttons: ' + buttons.length + ', Photo Index: ' + index);
                     if (((index == 0) && (buttons.length == 1)) || (buttons.length == 2)) {
                         buttons[buttons.length - 1].click().then(function() {
- 	                    // if we exceed maximum likes depth, stop like this current user.
+                            // if we exceed maximum likes depth, stop like this current user.
                             index++;
                             if (index == max_likes) {
                                 resolve();
@@ -88,7 +95,7 @@ function like(resolve, index, max_likes) {
                         });
                     } else {
                         // "Next" button doesn't exist. Stop like this current user.
-                        console.log('Next button does not exist. Stopping...');
+                        logger.info('Next button does not exist. Stopping...');
                         resolve();
                         return;
                     }
