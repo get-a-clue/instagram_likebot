@@ -26,6 +26,7 @@ var browser = new webdriver
 
 browser.manage().window().setSize(1024, 700);
 browser.get('https://www.instagram.com/accounts/login/');
+browser.sleep(settings.sleep_delay);
 browser.findElement(by.name('username')).sendKeys(settings.instagram_account_username);
 browser.findElement(by.name('password')).sendKeys(settings.instagram_account_password);
 browser.findElement(by.xpath('//button')).click();
