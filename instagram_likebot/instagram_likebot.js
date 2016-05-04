@@ -16,6 +16,7 @@ var logger = log4js.getLogger('instabot');
 logger.setLevel('DEBUG');
 
 var xpath_first_photo = '//header/../div/div/div[1]/a[1]';
+var xpath_like_class = '//div[@id="fb-root"]/following-sibling::div[1]/div/div/following-sibling::div[1]/div/article/div[2]/section[2]/a/span';
 var xpath_like_button = '//div[@id="fb-root"]/following-sibling::div[1]/div/div/following-sibling::div[1]/div/article/div[2]/section[2]/a';
 var xpath_nextprev_buttons = '//div[@id="fb-root"]/following-sibling::div[1]/div/div/div/div/*';
 
@@ -60,7 +61,7 @@ function like(resolve, index, max_likes) {
         logger.debug('Current url:   ' + url);
         browser.sleep(settings.sleep_delay);
 
-        browser.findElement(by.xpath(xpath_like_button)).getAttribute('class').then(function(classname) {
+        browser.findElement(by.xpath(xpath_like_class)).getAttribute('class').then(function(classname) {
             logger.debug('CSS Classname: ' + classname);
             if (settings.smart_like_mode && (classname.indexOf('coreSpriteHeartFull') > 0)) {
                 logger.info('Already liked. Stopping...');
