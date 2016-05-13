@@ -63,12 +63,12 @@ function like(resolve, index, max_likes) {
 
         browser.findElement(by.xpath(xpath_like_class)).getAttribute('class').then(function(classname) {
             logger.debug('CSS Classname: ' + classname);
-            if (settings.smart_like_mode && (classname.indexOf('coreSpriteHeartFull') > 0)) {
+            if (settings.smart_like_mode && (classname.indexOf('whiteoutSpriteHeartFull') > 0)) {
                 logger.info('Already liked. Stopping...');
                 resolve();
                 return;
             } else {
-                if (classname.indexOf('coreSpriteHeartOpen') > 0) {
+                if (classname.indexOf('whiteoutSpriteHeartOpen') > 0) {
                     browser.findElement(by.xpath(xpath_like_button)).click();
                     browser.sleep(settings.sleep_delay);
                 };
