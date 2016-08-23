@@ -1,24 +1,21 @@
-// Instagram like bot will help you like any accounts automatically.
-//
-// Installation: npm install
-//               edit user-specific variables in settings.json
-//               node instagram_likebot.js
-//
-var webdriver = require('selenium-webdriver'),
-by = webdriver.By,
-Promise = require('promise'),
-settings = require('./settings.json');
 
-var log4js = require('log4js'); 
+var webdriver = require('selenium-webdriver'),
+    by = webdriver.By,
+    Promise = require('promise'),
+    settings = require('./config/settings.js');
+
+var log4js = require('log4js');
+
 log4js.loadAppender('file');
 log4js.addAppender(log4js.appenders.file('instabot.log'), 'instabot');
+
 var logger = log4js.getLogger('instabot');
 logger.setLevel('DEBUG');
 
-var xpath_first_photo = '//header/../div/div/div[1]/a[1]';
-var xpath_like_class = '//div[@id="fb-root"]/following-sibling::div[1]/div/div/following-sibling::div[1]/div/article/div[2]/section[2]/a/span';
-var xpath_like_button = '//div[@id="fb-root"]/following-sibling::div[1]/div/div/following-sibling::div[1]/div/article/div[2]/section[2]/a';
-var xpath_nextprev_buttons = '//div[@id="fb-root"]/following-sibling::div[1]/div/div/div/div/*';
+var xpath_first_photo = '//header/../div/div/div[1]/a[1]',
+    xpath_like_class = '//div[@id="fb-root"]/following-sibling::div[1]/div/div/following-sibling::div[1]/div/article/div[2]/section[2]/a/span',
+    xpath_like_button = '//div[@id="fb-root"]/following-sibling::div[1]/div/div/following-sibling::div[1]/div/article/div[2]/section[2]/a',
+    xpath_nextprev_buttons = '//div[@id="fb-root"]/following-sibling::div[1]/div/div/div/div/*';
 
 var browser = new webdriver
     .Builder()
