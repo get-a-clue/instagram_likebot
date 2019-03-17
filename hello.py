@@ -13,9 +13,12 @@ logging.basicConfig(
     ])
 
 logging.info("Application started")
-idriver = InstaDriver(True, instagram_login, instagram_password)
-idriver.go_url("https://instagram.com")
+try:
+    idriver = InstaDriver(True, instagram_login, instagram_password)
+except:
+    logging.exception("Unable to initialize webdriver")
 
+idriver.go_url("https://instagram.com")
 driver = idriver.driver
 assert "Instagram" in driver.title
 idriver.suppress_notifications()
